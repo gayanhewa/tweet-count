@@ -4,7 +4,6 @@ namespace TweetCount\Providers;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-use Silex\Api\BootableProviderInterface;
 use TweetCount\Repositories\TwitterAPIConnector;
 use TweetCount\Controllers\HistogramServiceController;
 use Silex\Application;
@@ -30,10 +29,10 @@ class CoreServiceProvider implements ServiceProviderInterface
     $container['twitter.oauthtoken'] = function() {
 
       return new TwitterOAuth(
-        $this->config['consumer_key'],
-        $this->config['consumer_secret'],
-        $this->config['access_token'],
-        $this->config['access_secret']);
+        $this->config['connector']['twitter']['consumer_key'],
+        $this->config['connector']['twitter']['consumer_secret'],
+        $this->config['connector']['twitter']['access_token'],
+        $this->config['connector']['twitter']['access_secret']
       );
 
     };
@@ -42,8 +41,8 @@ class CoreServiceProvider implements ServiceProviderInterface
       return new TwitterHourlyCountService();
     };
 
-    $container['twitter.status.fetch.service'] = function() {
-      return new TwitterStatusFetchService();
+    $container['twitter.status.fetch.service'] = function() use($container) {
+      return new TwitterStatusFetchService($container['twitter.oauthtoken']);
     };
 
     $container['api.connector'] = function() use($container){

@@ -5,6 +5,13 @@ require_once __DIR__.'/../vendor/autoload.php';
 $app = new Silex\Application();
 $app['debug'] = true;
 
+/**
+ *  Routing for the main applications sits below. Since this service is rather
+ *  small , we will have the routes here it self
+ */
+
+$app['config.app'] = require_once __DIR__.'/../src/Config/app.php';
+
 // Opting for service controllers. Adds more less of a complete IOC container
 // capability for effective DI resolution
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
@@ -12,12 +19,7 @@ $app->register(new Silex\Provider\ServiceControllerServiceProvider());
 // Service bindings for the current app
 $app->register(new TweetCount\Providers\CoreServiceProvider($app));
 
-/**
- *  Routing for the main applications sits below. Since this service is rather
- *  small , we will have the routes here it self
- */
 
-$app['config.app'] = require_once __DIR__.'/../src/Config/app.php';
 
 // Forcing the content type header. When ever someone tests the api on a browser
 // it duplicates the api calls sine browsers like chrome send a subsequent
@@ -32,17 +34,7 @@ $app['config.app'] = require_once __DIR__.'/../src/Config/app.php';
 //        die('Invalid Content Type Header');
 //     }
 // });
-$app->get('/', function() use($app) {
 
-  return 'Try /hello/:name';
-
-});
-
-$app->get('/hello/{name}', function($name) use($app) {
-
-  return 'Hello ' . $app->escape($name);
-
-});
 
 
 $app->get('/{username}', 'histogram.controller:getStatsByUsername');

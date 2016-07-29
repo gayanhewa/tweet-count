@@ -7,11 +7,11 @@ use \Carbon\Carbon;
 class TwitterHourlyCountService
 {
 
-  public function count(array $statuses, array $current_status)
+  public function count(array $statuses, array $current_status = [])
   {
 
     $gate = 1;
-    
+
     // Loop trough the provided tweets so we can group the count by the hour
     foreach($statuses as $status) {
 
@@ -25,13 +25,14 @@ class TwitterHourlyCountService
       // we quite the process.
       if($date->day == $today->day) {
 
+        $current_status['ids'][$date->hour][] = $status->id;
         // initialize the count
-        if (! isset($current_status[$date->hour])) {
-          $current_status[$date->hour] = 0;
+        if (! isset($current_status['count'][$date->hour])) {
+          $current_status['count'][$date->hour] = 0;
         }
 
         // increment if an entry is found
-        $current_status[$date->hour]++;
+        $current_status['count'][$date->hour]++;
 
       }else{
 

@@ -9,7 +9,10 @@ use TweetCount\Services\TwitterStatusFetchService;
 class TwitterAPIConnector implements APIConnector
 {
 
-    protected $status = [];
+    protected $status = [
+      'ids' => [],
+      'count' => []
+    ];
     protected $counter;
     protected $api;
 
@@ -43,16 +46,20 @@ class TwitterAPIConnector implements APIConnector
             break;
           }
 
-          list($gate, $this->status) = $this->counter->count($statuses, $this->status);
+          $results = $this->counter->count($statuses, $this->status);
+
+          $gate = $results['gate'];
+          $this->status = $results['status'];
+
 
           // If the user has twitted more than 200 status updaes within the day
           // we will have to query again. To make sure counts are in order we use
           // twitter max_id , to get responses from the last item. Offsetting
           // everything else we have processed.
           // https://dev.twitter.com/rest/public/timelines
-          if (count($this->status) > 0) {
+          if (count($this->status['ids']) > 0) {
 
-            $last_item = $this->status[count($this->status)-1];
+            $last_item = $this->status['ids'][count($this->status)-1];
             $max_id = $last_item[count($last_item)-1];
 
           }
@@ -61,11 +68,11 @@ class TwitterAPIConnector implements APIConnector
 
       } catch (\Exception $e) {
          // for simplicity sake
-         error_log($e->getMessage());
+         error_log($e);
          $this->status = ['Something went wrong, please try again.'];
       }
-
-      return $this->status;
+      
+      return $this->status['count'];
     }
 
 }

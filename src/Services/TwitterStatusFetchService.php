@@ -7,13 +7,13 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 class TwitterStatusFetchService
 {
   protected $api;
-  
+
   public function __construct(TwitterOAuth $twitterAPI)
   {
       $this->api = $twitterAPI;
   }
 
-  public function fetch($username, $max_id = null, $count = 200)
+  public function fetch($username, $max_id = null, $count = 200, $options = [])
   {
 
       $params = [];
@@ -23,6 +23,10 @@ class TwitterStatusFetchService
       if (!is_null($max_id)) {
         // avoid duplicating the item at the end
         $params['max_id'] = $max_id-1;
+      }
+
+      foreach($options as $option=>$value) {
+        $params[$option] = $value;
       }
 
       // fetch the status for that user from twitter
