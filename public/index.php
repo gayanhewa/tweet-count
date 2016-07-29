@@ -4,8 +4,6 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 $app = new Silex\Application();
 
-$app['debug'] = isset(getenv(APP_DEBUG))? getenv(APP_DEBUG): false;
-
 /**
  *  Routing for the main applications sits below. Since this service is rather
  *  small , we will have the routes here it self
