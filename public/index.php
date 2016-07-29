@@ -4,6 +4,9 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 $app = new Silex\Application();
 
+// debug is enabled by default
+$app['debug'] = true;
+
 /**
  *  Routing for the main applications sits below. Since this service is rather
  *  small , we will have the routes here it self
