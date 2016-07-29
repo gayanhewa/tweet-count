@@ -12,6 +12,18 @@ Clone this repo :
 To before executing the API ensure dependencies are installed by running :
 
         composer install
+        
+You can run this with the built in web server to test :
+
+        php -S localhost:8080 public/index.php
+        
+Make sure you export the env variables for the config :
+
+        source env.sh
+
+Testing :
+        
+        curl http://localhost:8080/histogram/mashable
 
 The solution provides 4 endpoints :
 
