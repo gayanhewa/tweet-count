@@ -4,7 +4,7 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 $app = new Silex\Application();
 
-$app['debug'] = true;
+$app['debug'] = isset(getenv(APP_DEBUG))? getenv(APP_DEBUG): false;
 
 /**
  *  Routing for the main applications sits below. Since this service is rather
@@ -23,13 +23,16 @@ $app->register(new TweetCount\Providers\CoreServiceProvider($app));
 /**
  *  Handle exceptions and 404 error responses
  */
-$app->error(function (\Exception $e, Symfony\Component\HttpFoundation\Request $request, $code) {
+$app->error(function (\Exception $e, Symfony\Component\HttpFoundation\Request $request, $code) use($app) {
     switch ($code) {
         case 404:
             $message = 'The requested page could not be found.';
             break;
         default:
             $message = 'We are sorry, but something went terribly wrong.';
+            if($app['debug'] == true) {
+              $message = $e->getMessage();
+            }
     }
 
     return new Symfony\Component\HttpFoundation\Response(json_encode(['error'=>true, 'message' => $message]));

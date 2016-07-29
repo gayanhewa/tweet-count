@@ -34,7 +34,7 @@ class TwitterStatusFetchService
 
       // if there are any errors in the response. Quit the loop
       if (isset($statuses['errors']) && count($statuses['errors']) > 0) {
-        return false;
+        throw new \Exception($statuses['errors'][0]->message);
       }
 
       return $statuses;
