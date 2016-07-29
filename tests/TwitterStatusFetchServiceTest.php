@@ -10,8 +10,8 @@ class TwitterStatusFetchServiceTest extends \PHPUnit_Framework_TestCase
 
   public function setUp()
   {
-
-    $this->container['config'] = require_once __DIR__.'/../src/Config/test.php';
+    
+    $this->container['config'] = require __DIR__.'/../src/Config/test.php';
 
     $container['twitter.oauthtoken'] = new TwitterOAuth(
         $this->container['config']['connector']['twitter']['consumer_key'],
