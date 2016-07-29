@@ -1,0 +1,15 @@
+{
+    "require": {
+        "silex/silex": "^2.0",
+        "abraham/twitteroauth": "^0.6.4",
+        "nesbot/carbon": "^1.21",
+        "monolog/monolog": "^1.20",
+        "phpunit/phpunit": "^4.8",
+        "mockery/mockery": "^0.9.5"
+    },
+    "autoload": {
+      "psr-4": {
+        "TweetCount\\":"src/"
+      }
+    }
+}
