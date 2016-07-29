@@ -7,6 +7,36 @@ use \Carbon\Carbon;
 class TwitterHourlyCountService
 {
 
+  /**
+   *  Quick hack to format the time
+   */
+  protected $hour_map = [
+    0 => '00:00',
+    1 => '01:00',
+    2 => '02:00',
+    3 => '03:00',
+    4 => '04:00',
+    5 => '05:00',
+    6 => '06:00',
+    7 => '07:00',
+    8 => '08:00',
+    9 => '09:00',
+    10 => '10:00',
+    11 => '11:00',
+    12 => '12:00',
+    13 => '13:00',
+    14 => '14:00',
+    15 => '15:00',
+    16 => '16:00',
+    17 => '17:00',
+    18 => '18:00',
+    19 => '19:00',
+    20 => '20:00',
+    21 => '21:00',
+    22 => '22:00',
+    23 => '23:00'
+  ];
+
   public function count(array $statuses, array $current_status = [])
   {
 
@@ -27,12 +57,12 @@ class TwitterHourlyCountService
 
         $current_status['ids'][$date->hour][] = $status->id;
         // initialize the count
-        if (! isset($current_status['count'][$date->hour])) {
-          $current_status['count'][$date->hour] = 0;
+        if (! isset($current_status['count'][$this->hour_map[$date->hour]])) {
+          $current_status['count'][$this->hour_map[$date->hour]] = 0;
         }
 
         // increment if an entry is found
-        $current_status['count'][$date->hour]++;
+        $current_status['count'][$this->hour_map[$date->hour]]++;
 
       }else{
 

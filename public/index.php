@@ -3,6 +3,7 @@ date_default_timezone_set('UTC');
 require_once __DIR__.'/../vendor/autoload.php';
 
 $app = new Silex\Application();
+
 $app['debug'] = true;
 
 /**
@@ -19,27 +20,35 @@ $app->register(new Silex\Provider\ServiceControllerServiceProvider());
 // Service bindings for the current app
 $app->register(new TweetCount\Providers\CoreServiceProvider($app));
 
+/**
+ *  Handle exceptions and 404 error responses
+ */
+$app->error(function (\Exception $e, Symfony\Component\HttpFoundation\Request $request, $code) {
+    switch ($code) {
+        case 404:
+            $message = 'The requested page could not be found.';
+            break;
+        default:
+            $message = 'We are sorry, but something went terribly wrong.';
+    }
 
+    return new Symfony\Component\HttpFoundation\Response(json_encode(['error'=>true, 'message' => $message]));
+});
 
-// Forcing the content type header. When ever someone tests the api on a browser
-// it duplicates the api calls sine browsers like chrome send a subsequent
-// background request to fetch the favicon GET /favicon
-// this isn't necessary since most cases the api will be consumed
-// programatically
-// $app->before(function (Symfony\Component\HttpFoundation\Request $request) {
-//     if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
-//         $data = json_decode($request->getContent(), true);
-//         $request->request->replace(is_array($data) ? $data : array());
-//     }else{
-//        die('Invalid Content Type Header');
-//     }
-// });
+$app->get('/', function() use($app) {
+  return 'Try /hello/:name';
+});
 
+$app->get('/hello/{name}', function($name) use($app) {
 
+  return 'Hello ' . $app->escape($name);
 
-$app->get('/{username}', 'histogram.controller:getStatsByUsername');
+});
+
 $histogram = $app['controllers_factory'];
-$histogram->get('/{username}', 'TweetCount\Controllers\HistogramServiceController::getStatsByUsername');
+$histogram->get('/{username}', 'histogram.controller:getStatsByUsername');
+$histogram->get('/{username}/mostactive', 'histogram.controller:getMostActiveHourByUsername');
+
 $app->mount('/histogram', $histogram);
 
 $app->run();

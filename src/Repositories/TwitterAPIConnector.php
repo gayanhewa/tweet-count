@@ -8,7 +8,6 @@ use TweetCount\Services\TwitterStatusFetchService;
 
 class TwitterAPIConnector implements APIConnector
 {
-
     protected $status = [
       'ids' => [],
       'count' => []
@@ -29,50 +28,47 @@ class TwitterAPIConnector implements APIConnector
     public function getStatusesByUsername($username)
     {
 
-      try{
+      // control variable for the infinite while loop
+      $gate = 1;
+      $max_id = null;
 
-        // control variable for the infinite while loop
-        $gate = 1;
-        $max_id = null;
+      while($gate) {
 
-        while($gate) {
+        // fetch the status for that user from twitter
+        $statuses = $this->api->fetch($username, $max_id);
 
-          // fetch the status for that user from twitter
-          $statuses = $this->api->fetch($username, $max_id);
+        // if there are any errors in the response. Quit the loop
+        if (! $statuses) {
+          $gate = 0;
+          break;
+        }
 
-          // if there are any errors in the response. Quit the loop
-          if (! $statuses) {
-            $gate = 0;
-            break;
-          }
+        $results = $this->counter->count($statuses, $this->status);
 
-          $results = $this->counter->count($statuses, $this->status);
+        $gate = $results['gate'];
+        $this->status = $results['status'];
 
-          $gate = $results['gate'];
-          $this->status = $results['status'];
+        // If the user has twitted more than 200 status updaes within the day
+        // we will have to query again. To make sure counts are in order we use
+        // twitter max_id , to get responses from the last item. Offsetting
+        // everything else we have processed.
+        // https://dev.twitter.com/rest/public/timelines
+        if (count($this->status['ids']) > 0) {
 
-
-          // If the user has twitted more than 200 status updaes within the day
-          // we will have to query again. To make sure counts are in order we use
-          // twitter max_id , to get responses from the last item. Offsetting
-          // everything else we have processed.
-          // https://dev.twitter.com/rest/public/timelines
-          if (count($this->status['ids']) > 0) {
-
-            $last_item = $this->status['ids'][count($this->status)-1];
-            $max_id = $last_item[count($last_item)-1];
-
-          }
+          $last_item = $this->status['ids'][count($this->status['ids'])-1];
+          $max_id = $last_item[count($last_item)-1];
 
         }
 
-      } catch (\Exception $e) {
-         // for simplicity sake
-         error_log($e);
-         $this->status = ['Something went wrong, please try again.'];
       }
-      
+
       return $this->status['count'];
     }
 
+    public function getMostActiveHourByUsername($username)
+    {
+      $count = $this->getStatusesByUsername($username);
+
+      return [array_search(max($count),$count) => max($count)];
+    }
 }
