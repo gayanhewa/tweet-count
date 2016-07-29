@@ -1,8 +1,10 @@
+[![Build Status](https://travis-ci.org/gayanhewa/tweet-count.svg?branch=master)](https://travis-ci.org/gayanhewa/tweet-count)
+
 # TweetCount Service
 
 This is simple service that lets you query twitter user and gets the tweeting frequency.
 
-## Installation 
+## Installation
 
 Clone this repo :
 
@@ -31,7 +33,7 @@ This endpoint echo's back the most active hour for that user with the number of 
 - src - Main Source Directory
 - tests - Tests for the application
 - src/Config - All config files are included
-- Controllers - Controllers used with Routing 
+- Controllers - Controllers used with Routing
 - Providers - Service Providers
 - Repositories/Contracts - Interfaces for the Repositories
 - Repositories - Repository implementations
@@ -41,12 +43,9 @@ This endpoint echo's back the most active hour for that user with the number of 
 
 - Routes have been bind into Controllers that is kept thin
 - Repositories have been used to encapsulate the API connector , giving flexibility to re-implement if changes with SDK's used or different Social network stats are needed ( ie. Add Facebook post stats for 24 hours ) .
-- Services have been used to encapsulate the key business logic 
-- 3rd party twitter client for PHP was used to communicate with twitter API 
+- Services have been used to encapsulate the key business logic
+- 3rd party twitter client for PHP was used to communicate with twitter API
 
 ## Notes :
 - All times are in UTC
-- Twitter API keys must be exported as ENV variables , sample file included. 
-
-
-
+- Twitter API keys must be exported as ENV variables , sample file included.
