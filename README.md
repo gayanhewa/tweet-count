@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/gayanhewa/tweet-count.svg?branch=master)](https://travis-ci.org/gayanhewa/tweet-count)
-
 # TweetCount Service
 
 This is simple service that lets you query twitter user and gets the tweeting frequency.
